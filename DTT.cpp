@@ -90,6 +90,11 @@ namespace Example {
         Lam<"a", Var<"A">,
             App<App<App<App<symm, Var<"A">>, Var<"a">>, Var<"a">>,
                 App<App<Var<"refl">, Var<"A">>, Var<"a">>>>>;
+
+    template<Nat n> using idfunωᵀ = Pi<"A", Type<n>, Impl<Var<"A">, Var<"A">>>;
+    template<Nat n> using idfunω = Lam<"A", Type<n>, Lam<"x", Var<"A">, Var<"x">>>;
+
+    static_assert(Check<App<App<idfunω<Succ<Zero>>, idfunωᵀ<Zero>>, idfunω<Zero>>, idfunωᵀ<Zero>>);
 }
 
 int main() {
