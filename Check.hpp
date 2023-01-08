@@ -32,10 +32,9 @@ struct InferM<Ctx, Pi<T, U>> {
 
 template<typename Ctx, Val T, Val U>
 struct InferM<Ctx, App<T, U>> {
-    using τ = Infer<Ctx, T>;
-    static_assert(IsPiType<τ>);
+    using τ = Infer<Ctx, T>; static_assert(IsPiType<τ>);
     static_assert(Conv<typename τ::dom, Infer<Ctx, U>>);
-    using value = Eval<App<typename τ::lambda, Eval<U>>>;
+    using value = Eval<App<typename τ::lambda, U>>;
 };
 
 template<typename T, typename U> struct CheckM {

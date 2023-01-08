@@ -31,6 +31,9 @@ template<Val T> using Down = Shift<-1, 0, T>;
 template<Val, Integer, Val> struct SubstM;
 template<Val T, Integer i, Val U> using Subst = SubstM<T, i, U>::value;
 
+template<Val T, Val U> struct ApplyM { using value = App<T, U>; };
+template<Val T, Val U> using Apply = typename ApplyM<T, U>::value;
+
 template<Nat N, Integer i, Val U> struct SubstM<Type<N>, i, U>
 { using value = Type<N>; };
 
@@ -41,16 +44,13 @@ template<Integer j, Integer i, Val U> struct SubstM<Var<j>, i, U>
 { using value = If<i == j, U, Var<j>>; };
 
 template<Val T₁, Val T₂, Integer i, Val U> struct SubstM<App<T₁, T₂>, i, U>
-{ using value = App<Subst<T₁, i, U>, Subst<T₂, i, U>>; };
+{ using value = Apply<Subst<T₁, i, U>, Subst<T₂, i, U>>; };
 
 template<Val τ, Val φ, Integer i, Val U> struct SubstM<Lam<τ, φ>, i, U>
 { using value = Lam<Subst<τ, i, U>, Subst<φ, i + 1, Up<U>>>; };
 
 template<Val τ, Val φ, Integer i, Val U> struct SubstM<Pi<τ, φ>, i, U>
 { using value = Pi<Subst<τ, i, U>, Subst<φ, i + 1, Up<U>>>; };
-
-template<Val T, Val U> struct ApplyM { using value = App<T, U>; };
-template<Val T, Val U> using Apply = typename ApplyM<T, U>::value;
 
 template<Val τ, Val φ, Val T> struct ApplyM<Lam<τ, φ>, T>
 { using value = Down<Subst<φ, 0, Up<T>>>; };
