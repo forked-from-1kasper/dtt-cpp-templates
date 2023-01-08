@@ -89,10 +89,7 @@ namespace Example {
     Lam<"A", Type<Zero>,
         Lam<"a", Var<"A">,
             App<App<App<App<symm, Var<"A">>, Var<"a">>, Var<"a">>,
-                App<App<Var<"refl">, Var<"A">>, Var<"a">>
-            >
-        >
-    >;
+                App<App<Var<"refl">, Var<"A">>, Var<"a">>>>>;
 }
 
 int main() {
