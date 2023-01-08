@@ -35,6 +35,12 @@ namespace Value {
     static_assert(IsType<Infer<List<>, Example::Reflᵀ>>);
     static_assert(IsType<Infer<List<>, Example::Jᵀ>>);
 
+    // J(A, B, BRefl, a, a, refl(a)) ~> BRefl(a)
+    template<Val A, Val B, Val BRefl, Val a> struct ApplyM<
+        App<App<App<App<App<Const<"J">, A>, B>, BRefl>, a>, a>,
+        App<App<Const<"refl">, A>, a>
+    > { using value = Value::Apply<BRefl, a>; };
+
     template<> struct Postulate<"𝟏"> { using value = Type<Zero>; };
     template<> struct Postulate<"★"> { using value = Const<"𝟏">; };
 
@@ -43,8 +49,8 @@ namespace Value {
     template<> struct Postulate<"1₂"> { using value = Const<"𝟐">; };
 
     template<> struct Postulate<"¬"> { using value = Pi<Const<"𝟐">, Const<"𝟐">>; };
-    template<> struct EvalM<App<Const<"¬">, Const<"0₂">>> { using value = Const<"1₂">; };
-    template<> struct EvalM<App<Const<"¬">, Const<"1₂">>> { using value = Const<"0₂">; };
+    template<> struct ApplyM<Const<"¬">, Const<"0₂">> { using value = Const<"1₂">; };
+    template<> struct ApplyM<Const<"¬">, Const<"1₂">> { using value = Const<"0₂">; };
 }
 
 namespace Example {
@@ -78,13 +84,27 @@ namespace Example {
                     Var<"x">>, Var<"y">>, Var<"p">>>>>>;
 
     static_assert(Check<symm, symmᵀ>);
+
+    using symmTest =
+    Lam<"A", Type<Zero>,
+        Lam<"a", Var<"A">,
+            App<App<App<App<symm, Var<"A">>, Var<"a">>, Var<"a">>,
+                App<App<Var<"refl">, Var<"A">>, Var<"a">>
+            >
+        >
+    >;
 }
 
 int main() {
     using namespace Expr;
 
-    Value::Show<Infer<Example::test>>::show(std::cout) << std::endl;
-    Value::Show<Infer<Example::symm>>::show(std::cout) << std::endl;
+    Value::Show<Infer<Example::test>>::show(std::cout << "test : ") << std::endl;
+
+    Value::Show<Infer<Example::symm>>::show(std::cout << "symm : ") << std::endl;
+    Value::Show<Eval<Example::symm>>::show(std::cout << "symm ≡ ") << std::endl;
+
+    Value::Show<Infer<Example::symmTest>>::show(std::cout << "symmTest : ") << std::endl;
+    Value::Show<Eval<Example::symmTest>>::show(std::cout << "symmTest ≡ ") << std::endl;
 
     Value::Show<Infer<App<Var<"=">, Var<"𝟏">>>>::show(std::cout) << std::endl;
     Value::Show<Eval<App<Var<"¬">, Var<"0₂">>>>::show(std::cout) << std::endl;
