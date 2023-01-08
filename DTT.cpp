@@ -59,11 +59,11 @@ namespace Example {
         Lam<"f", Impl<Var<"A">, Var<"A">>,
             Lam<"x", Var<"A">, App<Var<"f">, Var<"x">>>>>;
 
-    using symmᵀ = Pi<"A", Type<Zero>,
-        Pi<"a", Var<"A">,
-            Pi<"b", Var<"A">,
-                Impl<Id<Var<"A">, Var<"a">, Var<"b">>,
-                     Id<Var<"A">, Var<"b">, Var<"a">>>>>>;
+    using symmᵀ =
+    Pi<"A", Type<Zero>,
+        Pi<"a", Var<"A">, Pi<"b", Var<"A">,
+            Impl<Id<Var<"A">, Var<"a">, Var<"b">>,
+                 Id<Var<"A">, Var<"b">, Var<"a">>>>>>;
 
     using φ =
     Lam<"a", Var<"A">, Lam<"b", Var<"A">,
