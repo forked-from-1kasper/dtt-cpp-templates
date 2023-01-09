@@ -40,7 +40,7 @@ namespace Value {
     template<Val A, Val B, Val BRefl, Val a> struct ApplyM<
         App<App<App<App<App<Const<"J">, A>, B>, BRefl>, a>, a>,
         App<App<Const<"refl">, A>, a>
-    > { using value = Value::Apply<BRefl, a>; };
+    > { using value = Apply<BRefl, a>; };
 
     template<> struct Postulate<"𝟏"> { using value = Type<Zero>; };
     template<> struct Postulate<"★"> { using value = Const<"𝟏">; };
