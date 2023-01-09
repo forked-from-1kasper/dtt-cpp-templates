@@ -57,3 +57,11 @@ template<Literal> struct Postulate;
 template<Literal x> using Lookup = typename Postulate<x>::value;
 
 }
+
+#define App³(T₁, T₂, T₃)                         App<App<T₁, T₂>, T₃>
+#define App⁴(T₁, T₂, T₃, T₄)                     App<App<App<T₁, T₂>, T₃>, T₄>
+#define App⁵(T₁, T₂, T₃, T₄, T₅)                 App<App<App<App<T₁, T₂>, T₃>, T₄>, T₅>
+#define App⁶(T₁, T₂, T₃, T₄, T₅, T₆)             App<App<App<App<App<T₁, T₂>, T₃>, T₄>, T₅>, T₆>
+#define App⁷(T₁, T₂, T₃, T₄, T₅, T₆, T₇)         App<App<App<App<App<App<T₁, T₂>, T₃>, T₄>, T₅>, T₆>, T₇>
+#define App⁸(T₁, T₂, T₃, T₄, T₅, T₆, T₇, T₈)     App<App<App<App<App<App<App<T₁, T₂>, T₃>, T₄>, T₅>, T₆>, T₇>, T₈>
+#define App⁹(T₁, T₂, T₃, T₄, T₅, T₆, T₇, T₈, T₉) App<App<App<App<App<App<App<App<T₁, T₂>, T₃>, T₄>, T₅>, T₆>, T₇>, T₈>, T₉>

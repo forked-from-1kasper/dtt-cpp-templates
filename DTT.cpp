@@ -38,8 +38,8 @@ namespace Value {
 
     // J(A, B, BRefl, a, a, refl(a)) ~> BRefl(a)
     template<Val A, Val B, Val BRefl, Val a> struct ApplyM<
-        App<App<App<App<App<Const<"J">, A>, B>, BRefl>, a>, a>,
-        App<App<Const<"refl">, A>, a>
+        App⁶(Const<"J">, A, B, BRefl, a, a),
+        App³(Const<"refl">, A, a)
     > { using value = Apply<BRefl, a>; };
 
     template<> struct Postulate<"𝟏"> { using value = Type<Zero>; };
