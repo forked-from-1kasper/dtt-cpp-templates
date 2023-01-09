@@ -6,10 +6,11 @@
 
 namespace Example {
     using namespace Expr;
-    using Idᵀ = Parse<Pi<"A", Type<Zero>, Impl<Var<"A">, Impl<Var<"A">, Type<Zero>>>>>;
+
+    using Idᵀ = Parse<Pi<"A", Type<Zero>, Impl<Var<"A">, Var<"A">, Type<Zero>>>>;
 
     template<typename T, typename t₁, typename t₂>
-    using Id = App<App<App<Var<"=">, T>, t₁>, t₂>;
+    using Id = App<Var<"=">, T, t₁, t₂>;
 
     using Reflᵀ = Parse<Pi<"A", Type<Zero>, Pi<"a", Var<"A">, Id<Var<"A">, Var<"a">, Var<"a">>>>>;
 
@@ -17,11 +18,11 @@ namespace Example {
     using Refl = App<App<Var<"refl">, T>, t>;
 
     using Bᵀ = Pi<"a", Var<"A">, Pi<"b", Var<"A">, Impl<Id<Var<"A">, Var<"a">, Var<"b">>, Type<Zero>>>>;
-    using BRefl = Pi<"x", Var<"A">, App<App<App<Var<"B">, Var<"x">>, Var<"x">>, Refl<Var<"A">, Var<"x">>>>;
+    using BRefl = Pi<"x", Var<"A">, App<Var<"B">, Var<"x">, Var<"x">, Refl<Var<"A">, Var<"x">>>>;
 
     using BQuantified =
     Pi<"a", Var<"A">, Pi<"b", Var<"A">, Pi<"p", Id<Var<"A">, Var<"a">, Var<"b">>,
-        App<App<App<Var<"B">, Var<"a">>, Var<"b">>, Var<"p">>>>>;
+        App<Var<"B">, Var<"a">, Var<"b">, Var<"p">>>>>;
 
     using Jᵀ = Parse<Pi<"A", Type<Zero>, Pi<"B", Bᵀ, Impl<BRefl, BQuantified>>>>;
 }
@@ -79,22 +80,26 @@ namespace Example {
     using symm =
     Lam<"A", Type<Zero>, Lam<"x", Var<"A">, Lam<"y", Var<"A">,
         Lam<"p", Id<Var<"A">, Var<"x">, Var<"y">>,
-            App<App<App<App<App<App<Var<"J">, Var<"A">>, φ>,
-                App<Var<"refl">, Var<"A">>>,
-                    Var<"x">>, Var<"y">>, Var<"p">>>>>>;
+            App<Var<"J">, Var<"A">, φ, App<Var<"refl">, Var<"A">>,
+                Var<"x">, Var<"y">, Var<"p">>>>>>;
 
     static_assert(Check<symm, symmᵀ>);
 
     using symmTest =
-    Lam<"A", Type<Zero>,
-        Lam<"a", Var<"A">,
-            App<App<App<App<symm, Var<"A">>, Var<"a">>, Var<"a">>,
-                App<App<Var<"refl">, Var<"A">>, Var<"a">>>>>;
+    Lam<"A", Type<Zero>, Lam<"a", Var<"A">,
+        App<symm, Var<"A">, Var<"a">, Var<"a">,
+            App<Var<"refl">, Var<"A">, Var<"a">>>>>;
 
     template<Nat n> using idfunωᵀ = Pi<"A", Type<n>, Impl<Var<"A">, Var<"A">>>;
     template<Nat n> using idfunω = Lam<"A", Type<n>, Lam<"x", Var<"A">, Var<"x">>>;
 
     static_assert(Check<App<App<idfunω<Succ<Zero>>, idfunωᵀ<Zero>>, idfunω<Zero>>, idfunωᵀ<Zero>>);
+
+    using multiAppTest =
+    Lam<"A", Type<Zero>, Lam<"B", Type<Zero>, Lam<"C", Type<Zero>,
+        Lam<"φ", Impl<Var<"A">, Var<"B">, Var<"C">>,
+            Lam<"a", Var<"A">, Lam<"b", Var<"B">,
+                App<Var<"φ">, Var<"a">, Var<"b">>>>>>>>;
 }
 
 int main() {
@@ -107,6 +112,9 @@ int main() {
 
     Value::Show<Infer<Example::symmTest>>::show(std::cout << "symmTest : ") << std::endl;
     Value::Show<Eval<Example::symmTest>>::show(std::cout << "symmTest ≡ ") << std::endl;
+
+    Value::Show<Infer<Example::multiAppTest>>::show(std::cout << "multiAppTest : ") << std::endl;
+    Value::Show<Eval<Example::multiAppTest>>::show(std::cout << "multiAppTest ≡ ") << std::endl;
 
     Value::Show<Infer<App<Var<"=">, Var<"𝟏">>>>::show(std::cout) << std::endl;
     Value::Show<Eval<App<Var<"¬">, Var<"0₂">>>>::show(std::cout) << std::endl;
